@@ -1,5 +1,9 @@
 # Lab 16 — Reflexion Agent
 
+## Thông tin học viên
+- **Họ và tên**: Dam Manh Dung
+- **Mã học viên**: 2A202600741
+
 ## Tổng quan
 
 Bài lab giúp bạn hiểu và triển khai **Reflexion Agent** — một kiến trúc agent có khả năng tự phản chiếu (self-reflection) để cải thiện câu trả lời qua nhiều lần thử.
