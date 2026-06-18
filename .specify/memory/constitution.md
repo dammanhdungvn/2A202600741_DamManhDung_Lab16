@@ -1,50 +1,40 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+- Version change: [INITIAL] -> 1.0.0
+- Modified principles: N/A (Initial setup)
+- Added sections: Production Quality, Clean Architecture, Database Transactions, RESTful API, Test Coverage.
+- Removed sections: Placeholder sections
+- Templates requiring updates: ✅ None pending
+- Follow-up TODOs: Determine original RATIFICATION_DATE.
+-->
+# Course Registration System Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Production Quality & Clean Code
+Tất cả mã nguồn phải đạt tiêu chuẩn production. Tuân thủ nghiêm ngặt các nguyên lý Clean Code (đặt tên rõ ràng, hàm nhỏ gọn, dễ đọc, dễ bảo trì). Tuyệt đối không được phép nhồi nhét mã nguồn vào một vài tệp.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Clean Architecture
+Phải tuân thủ nghiêm ngặt Clean Architecture. Mã nguồn phải được phân chia thành các thư mục và tầng riêng biệt:
+- **Controller**: Chỉ xử lý HTTP request/response và routing.
+- **Use Case (Service)**: Chứa toàn bộ logic nghiệp vụ (business logic).
+- **Repository**: Xử lý giao tiếp với cơ sở dữ liệu, không rò rỉ chi tiết DB ra ngoài.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Database Transactions
+Mọi thao tác ghi dữ liệu (Create, Update, Delete) phải được bọc trong Database Transaction để đảm bảo tính toàn vẹn và nhất quán của dữ liệu.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. RESTful API & Centralized Error Handling
+Các API phải tuân thủ nghiêm ngặt chuẩn RESTful (sử dụng đúng các HTTP methods, URI naming, status codes).
+Hệ thống phải triển khai cơ chế xử lý lỗi tập trung (Centralized Error Handling) để bắt các exception và trả về phản hồi lỗi thống nhất cho client.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Test Coverage & Testing
+Tỷ lệ bao phủ kiểm thử (Test coverage) tối thiểu phải đạt 80%. Tất cả các logic nghiệp vụ (trong Use Case) phải được viết unit test đầy đủ.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Constitution này là tài liệu cao nhất định hướng cho việc phát triển dự án. Tất cả các thành viên tham gia dự án PHẢI tuân thủ các quy tắc trên trong quá trình phát triển và Code Review.
+- Code Review phải xác minh tính tuân thủ với Clean Architecture.
+- Bất kỳ PR nào làm giảm coverage xuống dưới 80% đều sẽ bị từ chối.
+- Các sửa đổi đối với Constitution phải được thảo luận, phê duyệt và thay đổi phiên bản theo Semantic Versioning.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): Provide initial date | **Last Amended**: 2026-06-18

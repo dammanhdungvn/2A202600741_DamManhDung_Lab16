@@ -14,12 +14,15 @@ class QAExample(BaseModel):
     context: list[ContextChunk]
 
 class JudgeResult(BaseModel):
-    # TODO: Học viên định nghĩa các trường cần thiết cho kết quả đánh giá (score, reason, ...)
-    pass
+    is_correct: bool
+    score: int
+    reason: str
 
 class ReflectionEntry(BaseModel):
-    # TODO: Học viên định nghĩa các trường cần thiết cho một mục reflection (attempt_id, lesson, strategy, ...)
-    pass
+    attempt_id: int
+    lesson: str
+    strategy: str
+    failure_mode: Literal["none", "entity_drift", "incomplete_multi_hop", "wrong_final_answer", "looping", "reflection_overfit"]
 
 class AttemptTrace(BaseModel):
     attempt_id: int
