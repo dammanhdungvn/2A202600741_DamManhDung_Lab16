@@ -21,29 +21,35 @@ Kết quả mock hoàn toàn deterministic — giúp bạn hiểu flow trước 
 
 ### Chạy hệ thống Reflexion Agent
 ```bash
-# Cài đặt môi trường bằng uv
-uv venv .venv
+# Cài đặt môi trường
+python -m venv .venv
 source .venv/bin/activate
-uv pip install -r requirements.txt
+pip install -r requirements.txt
 
-# Sinh tập dữ liệu 100 câu hỏi
-python scripts/generate_dataset.py
-
-### 3. Chạy giao diện Streamlit Dashboard (Khuyên dùng)
-Bạn có thể sử dụng giao diện trực quan để chạy benchmark và xem báo cáo bằng biểu đồ:
-```bash
-uv run streamlit run src/ui/app.py
-```
-
-### 4. Chạy Benchmark qua CLI (Dành cho dòng lệnh)
-Sử dụng script Python với `uv run`:
-```bash
-uv run python run_benchmark.py --dataset data/evaluation_100.json --out-dir outputs/qwen_run
-```
+# Chạy benchmark với mock data mặc định
+python run_benchmark.py --dataset data/hotpot_mini.json --out-dir outputs/sample_run
 
 # Chạy chấm điểm tự động
-python autograde.py --report-path outputs/qwen_run/report.json
+python autograde.py --report-path outputs/sample_run/report.json
 ```
+
+### 💡 Test nhanh với tập dữ liệu mới (Custom Data)
+Nếu bạn có tập dữ liệu mới và muốn test thử nghiệm:
+
+**Cách 1: Qua Terminal (CLI)**
+Bạn chỉ cần truyền tham số `--dataset` trỏ tới file JSON dữ liệu mới:
+```bash
+python run_benchmark.py --dataset path/to/your/new_data.json --out-dir outputs/custom_run
+```
+
+**Cách 2: Qua giao diện Streamlit Dashboard (Trực quan, khuyên dùng)**
+Giao diện Streamlit đã tự động tìm và quét toàn bộ các file `.json` có trong thư mục `data/`.
+1. Hãy copy file data mới của bạn thả vào thư mục `data/`.
+2. Chạy Dashboard:
+```bash
+python -m streamlit run src/ui/app.py
+```
+3. Trên Sidebar bên trái, mở mục **Select Dataset** và chọn file dữ liệu mới của bạn. Sau đó bấm nút *Start Benchmark*!
 
 ## Nhiệm vụ của Học viên
 

@@ -65,6 +65,16 @@ def actor_answer(example: QAExample, attempt_id: int, agent_type: str, reflectio
         content = example.gold_answer if attempt_id > 1 else "Wrong answer"
     return content.strip(), tokens, latency
 
+def _clean_json(text: str) -> str:
+    text = text.strip()
+    if text.startswith("```json"):
+        text = text[7:]
+    if text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    return text.strip()
+
 def evaluator(example: QAExample, answer: str) -> Tuple[JudgeResult, int, int]:
     user_prompt = f"Question: {example.question}\nGold Answer: {example.gold_answer}\nPredicted Answer: {answer}"
     messages = [
@@ -74,9 +84,10 @@ def evaluator(example: QAExample, answer: str) -> Tuple[JudgeResult, int, int]:
     
     content, tokens, latency = _call_qwen(messages, response_format="json")
     if not content:
-        result = JudgeResult(is_correct=(answer == example.gold_answer), score=1 if answer == example.gold_answer else 0, reason="Fallback evaluation")
+        result = JudgeResult(is_correct=(answer == example.gold_answer), score=100 if answer == example.gold_answer else 0, reason="Fallback evaluation")
         return result, tokens, latency
     try:
+        content = _clean_json(content)
         data = json.loads(content)
         result = JudgeResult(**data)
     except Exception as e:
@@ -102,6 +113,7 @@ def reflector(example: QAExample, attempt_id: int, judge: JudgeResult, answer: s
         )
         return result, tokens, latency
     try:
+        content = _clean_json(content)
         data = json.loads(content)
         data['attempt_id'] = attempt_id
         if 'failure_mode' not in data or data['failure_mode'] not in ["none", "entity_drift", "incomplete_multi_hop", "wrong_final_answer", "looping", "reflection_overfit"]:

@@ -13,7 +13,7 @@ class BaseAgent:
         reflections: list[ReflectionEntry] = []
         traces: list[AttemptTrace] = []
         final_answer = ""
-        final_score = 0
+        final_is_correct = False
         for attempt_id in range(1, self.max_attempts + 1):
             answer, actor_tokens, actor_latency = actor_answer(example, attempt_id, self.agent_type, reflection_memory)
             judge, judge_tokens, judge_latency = evaluator(example, answer)
@@ -23,8 +23,8 @@ class BaseAgent:
             
             trace = AttemptTrace(attempt_id=attempt_id, answer=answer, score=judge.score, reason=judge.reason, token_estimate=token_estimate, latency_ms=latency_ms)
             final_answer = answer
-            final_score = judge.score
-            if judge.score == 1:
+            final_is_correct = judge.is_correct
+            if judge.is_correct:
                 traces.append(trace)
                 break
             
@@ -42,8 +42,8 @@ class BaseAgent:
         total_tokens = sum(t.token_estimate for t in traces)
         total_latency = sum(t.latency_ms for t in traces)
         
-        failure_mode = "none" if final_score == 1 else (reflections[-1].failure_mode if reflections else "wrong_final_answer")
-        return RunRecord(qid=example.qid, question=example.question, gold_answer=example.gold_answer, agent_type=self.agent_type, predicted_answer=final_answer, is_correct=bool(final_score), attempts=len(traces), token_estimate=total_tokens, latency_ms=total_latency, failure_mode=failure_mode, reflections=reflections, traces=traces)
+        failure_mode = "none" if final_is_correct else (reflections[-1].failure_mode if reflections else "wrong_final_answer")
+        return RunRecord(qid=example.qid, question=example.question, gold_answer=example.gold_answer, agent_type=self.agent_type, predicted_answer=final_answer, is_correct=final_is_correct, attempts=len(traces), token_estimate=total_tokens, latency_ms=total_latency, failure_mode=failure_mode, reflections=reflections, traces=traces)
 
 class ReActAgent(BaseAgent):
     def __init__(self) -> None:

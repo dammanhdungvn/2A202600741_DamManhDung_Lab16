@@ -37,32 +37,39 @@ def save_report(report: ReportPayload, out_dir: str | Path) -> tuple[Path, Path]
     reflexion = s.get("reflexion", {})
     delta = s.get("delta_reflexion_minus_react", {})
     ext_lines = "\n".join(f"- {item}" for item in report.extensions)
-    md = f"""# Lab 16 Benchmark Report
+    md = f"""# 📊 Báo cáo Benchmark Lab 16
 
-## Metadata
-- Dataset: {report.meta['dataset']}
-- Mode: {report.meta['mode']}
-- Records: {report.meta['num_records']}
-- Agents: {', '.join(report.meta['agents'])}
+## 👨‍🎓 Thông tin học viên
+- **Họ và tên**: Dam Manh Dung
+- **Mã học viên**: 2A202600741
 
-## Summary
-| Metric | ReAct | Reflexion | Delta |
-|---|---:|---:|---:|
-| EM | {react.get('em', 0)} | {reflexion.get('em', 0)} | {delta.get('em_abs', 0)} |
-| Avg attempts | {react.get('avg_attempts', 0)} | {reflexion.get('avg_attempts', 0)} | {delta.get('attempts_abs', 0)} |
-| Avg token estimate | {react.get('avg_token_estimate', 0)} | {reflexion.get('avg_token_estimate', 0)} | {delta.get('tokens_abs', 0)} |
-| Avg latency (ms) | {react.get('avg_latency_ms', 0)} | {reflexion.get('avg_latency_ms', 0)} | {delta.get('latency_abs', 0)} |
+## ⚙️ Cấu hình (Metadata)
+- **Tập dữ liệu**: `{report.meta['dataset']}`
+- **Chế độ (Mode)**: `{report.meta['mode']}`
+- **Tổng số mẫu**: `{report.meta['num_records']}`
+- **Agents**: `{', '.join(report.meta['agents'])}`
 
-## Failure modes
-```json
-{json.dumps(report.failure_modes, indent=2)}
-```
+## 📈 Kết quả tổng quan (Summary)
+| Chỉ số | 🤖 ReAct | 🧠 Reflexion | 📉 Khác biệt (Delta) |
+|:---|---:|---:|---:|
+| **Độ chính xác (EM)** | {react.get('em', 0):.1%} | {reflexion.get('em', 0):.1%} | {delta.get('em_abs', 0):+.1%} |
+| **Lần sửa sai trung bình** | {react.get('avg_attempts', 0):.1f} | {reflexion.get('avg_attempts', 0):.1f} | {delta.get('attempts_abs', 0):+.1f} |
+| **Tokens trung bình** | {react.get('avg_token_estimate', 0):.0f} | {reflexion.get('avg_token_estimate', 0):.0f} | {delta.get('tokens_abs', 0):+.0f} |
+| **Độ trễ trung bình** | {react.get('avg_latency_ms', 0):.0f}ms | {reflexion.get('avg_latency_ms', 0):.0f}ms | {delta.get('latency_abs', 0):+.0f}ms |
 
-## Extensions implemented
+## 🚨 Phân tích lỗi (Failure Modes)
+"""
+    for agent, modes in report.failure_modes.items():
+        md += f"### {agent.capitalize()} Agent\n"
+        for mode, count in modes.items():
+            md += f"- **{mode}**: `{count}` lần\n"
+        md += "\n"
+
+    md += f"""## 🧩 Extensions implemented
 {ext_lines}
 
-## Discussion
-{report.discussion}
+## 📝 Discussion
+> {report.discussion}
 """
     md_path.write_text(md, encoding="utf-8")
     return json_path, md_path

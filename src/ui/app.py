@@ -1,4 +1,10 @@
 import os
+import sys
+# Thêm thư mục gốc của project vào sys.path để Python nhận diện được package `src`
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 import streamlit as st
 import glob
 
@@ -25,9 +31,13 @@ def main():
     
     # API Configuration
     st.sidebar.subheader("API Configuration")
-    api_key = st.sidebar.text_input("Qwen API Key", value=os.environ.get("QWEN_API_KEY", ""), type="password")
-    if api_key:
-        os.environ["QWEN_API_KEY"] = api_key
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    if os.environ.get("QWEN_API_KEY"):
+        st.sidebar.success("✅ Qwen API Key đã được cấu hình bảo mật từ file `.env`")
+    else:
+        st.sidebar.error("❌ Chưa tìm thấy Qwen API Key trong file `.env`!")
         
     st.title("Reflexion Agent Benchmark")
     

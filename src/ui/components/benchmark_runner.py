@@ -39,16 +39,31 @@ def run_benchmark_ui(dataset_path: str, out_dir: str, reflexion_attempts: int):
     progress_bar = st.progress(0)
     status_text = st.empty()
     
+    st.markdown("### 🔍 Theo dõi tiến trình chi tiết")
+    log_container = st.container(height=500)
+    
     for i, example in enumerate(examples):
-        status_text.text(f"Đang xử lý câu hỏi {i+1}/{total}... (ID: {example.id})")
+        status_text.info(f"⏳ **Đang xử lý câu hỏi {i+1}/{total}...** (ID: `{example.qid}`)")
         
         # Chạy ReAct
         react_record = react.run(example)
         react_records.append(react_record)
+        react_icon = "🟢 ĐÚNG" if react_record.is_correct else "🔴 SAI"
         
         # Chạy Reflexion
         reflexion_record = reflexion.run(example)
         reflexion_records.append(reflexion_record)
+        reflexion_icon = "🟢 ĐÚNG" if reflexion_record.is_correct else "🔴 SAI"
+        
+        # Log ra UI
+        with log_container:
+            with st.expander(f"📌 Câu hỏi {i+1}/{total} | ID: {example.qid} | ReAct: {react_icon} ➡️ Reflexion: {reflexion_icon}", expanded=True):
+                st.write(f"**Hỏi:** {example.question}")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"**🤖 ReAct Agent**\n- Kết quả: **{react_icon}**\n- Thời gian: `{react_record.latency_ms}ms`\n- Tokens: `{react_record.token_estimate}`")
+                with col2:
+                    st.markdown(f"**🧠 Reflexion Agent**\n- Kết quả: **{reflexion_icon}**\n- Số lần sửa sai (Attempts): `{reflexion_record.attempts}/{reflexion_attempts}`\n- Thời gian: `{reflexion_record.latency_ms}ms`\n- Tokens: `{reflexion_record.token_estimate}`")
         
         # Cập nhật progress
         progress = (i + 1) / total
