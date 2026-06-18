@@ -4,3 +4,6 @@ typer>=0.12
 pandas>=2.2
 python-dotenv>=1.0
 openai>=1.0
+streamlit
+plotly
+pandas

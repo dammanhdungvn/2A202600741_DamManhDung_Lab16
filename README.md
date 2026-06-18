@@ -19,18 +19,30 @@ Repo sử dụng **Mock Runtime** (`mock_runtime.py`) để giả lập phản h
 
 Kết quả mock hoàn toàn deterministic — giúp bạn hiểu flow trước khi tốn chi phí API.
 
-### Chạy thử với mock
+### Chạy hệ thống Reflexion Agent
 ```bash
-# Cài đặt môi trường
-python -m venv .venv
+# Cài đặt môi trường bằng uv
+uv venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 
-# Chạy benchmark với mock data
-python run_benchmark.py --dataset data/hotpot_mini.json --out-dir outputs/sample_run
+# Sinh tập dữ liệu 100 câu hỏi
+python scripts/generate_dataset.py
+
+### 3. Chạy giao diện Streamlit Dashboard (Khuyên dùng)
+Bạn có thể sử dụng giao diện trực quan để chạy benchmark và xem báo cáo bằng biểu đồ:
+```bash
+uv run streamlit run src/ui/app.py
+```
+
+### 4. Chạy Benchmark qua CLI (Dành cho dòng lệnh)
+Sử dụng script Python với `uv run`:
+```bash
+uv run python run_benchmark.py --dataset data/evaluation_100.json --out-dir outputs/qwen_run
+```
 
 # Chạy chấm điểm tự động
-python autograde.py --report-path outputs/sample_run/report.json
+python autograde.py --report-path outputs/qwen_run/report.json
 ```
 
 ## Nhiệm vụ của Học viên
